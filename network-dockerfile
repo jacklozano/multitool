@@ -1,0 +1,9 @@
+FROM ubuntu:22.04
+
+### Update apt and Install basic apps ###
+RUN apt update && apt install -y curl git jq less watch wget
+
+### Update apt and Install Networking apps ###
+RUN apt update && apt install -y dnsutils nmap traceroute
+
+ENTRYPOINT /bin/bash

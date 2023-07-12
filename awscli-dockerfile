@@ -1,3 +1,13 @@
+### current version - 1.0.1
 FROM ubuntu:22.04
+
+### Update apt and Install basic apps ###
+RUN apt update && apt install -y curl dnsutils git jq less unzip watch wget
+
+### Install AWS-CLI Latest ###
+### https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html ###
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"
+RUN unzip /tmp/awscliv2.zip -d /tmp
+RUN /tmp/aws/install
 
 ENTRYPOINT /bin/bash
