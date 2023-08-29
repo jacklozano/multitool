@@ -1,0 +1,32 @@
+### current version - 1.0.1
+FROM ubuntu:22.04
+
+### Update apt and Install basic apps and dependencies ###
+RUN apt update && apt install -y apt-transport-https ca-certificates curl dnsutils gnupg git jq less nmap software-properties-common traceroute unzip watch wget 
+
+### Install AWS-CLI Latest ###
+### https://docs.aws.amazon.com/cli/latest/userguide/getting-started-install.html ###
+RUN curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "/tmp/awscliv2.zip"
+RUN unzip /tmp/awscliv2.zip -d /tmp
+RUN /tmp/aws/install
+
+### Install Kubectl ###
+### https://kubernetes.io/docs/tasks/tools/install-kubectl-linux/#install-using-native-package-management ###
+# RUN curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo --dearmor -o /etc/apt/keyrings/kubernetes-archive-keyring.gpg
+RUN curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | gpg --dearmor -o /etc/apt/keyrings/kubernetes-archive-keyring.gpg && \
+    echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | tee /etc/apt/sources.list.d/kubernetes.list && \
+    apt update && apt install -y kubectl
+
+### Install docker-ce ###
+RUN curl -fsSL https://download.docker.com/linux/ubuntu/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null && \
+    apt update && apt install -y docker-ce
+
+### Install Helm ###
+RUN curl -fsSL -o /tmp/get_helm.sh https://raw.githubusercontent.com/helm/helm/main/scripts/get-helm-3 && \
+    chmod 700 /tmp/get_helm.sh && \
+    /tmp/get_helm.sh
+
+USER 1000
+
+ENTRYPOINT /bin/bash
